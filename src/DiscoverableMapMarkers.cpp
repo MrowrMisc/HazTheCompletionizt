@@ -33,13 +33,16 @@ void ReloadDiscoverableMapMarkers() {
 
         auto* persistent = worldspace->persistentCell;
         if (persistent) {
-            for (auto& refHandle : persistent->references) {
-                auto* ref = refHandle.get();
-                if (!ref) continue;
+            // persistent->ForEachReference(std::function<BSContainer::ForEachResult (TESObjectREFR *)> a_callback)
+            persistent->ForEachReference([&](RE::TESObjectREFR* ref) {
+                // for (auto& refHandle : persistent->references) {
+                //     auto* ref = refHandle.get();
+                //     if (!ref) continue;
                 auto* file = ref->GetFile(0);
                 if (IgnoredMapMarkers.contains(ref->GetFormID())) {
                     Log("[Discoverable Map Marker]: Ignoring map marker with ID {:x} from {}", ref->GetLocalFormID(), file->GetFilename());
-                    continue;
+                    // continue;
+                    return RE::BSContainer::ForEachResult::kContinue;
                 }
                 if (auto* extraMapMarker = ref->extraList.GetByType<RE::ExtraMapMarker>()) {
                     if (auto* mapData = extraMapMarker->mapData) {
@@ -47,7 +50,8 @@ void ReloadDiscoverableMapMarkers() {
                             if (IgnoredLocationNames.contains(ToLowerCase(mapData->locationName.GetFullName()))) {
                                 Log("[Discoverable Map Marker]: Ignoring map marker with name '{}' from {:x} @ {}", mapData->locationName.GetFullName(), ref->GetLocalFormID(),
                                     file->GetFilename());
-                                continue;
+                                // continue;
+                                return RE::BSContainer::ForEachResult::kContinue;
                             }
                             if (!g_hasLoggedFullListOfDiscoverableMapMarkers)
                                 Log("[Discoverable Map Marker]: '{}' from {:x} @ {}", mapData->locationName.GetFullName(), ref->GetLocalFormID(), file->GetFilename());
@@ -56,7 +60,8 @@ void ReloadDiscoverableMapMarkers() {
                         }
                     }
                 }
-            }
+                return RE::BSContainer::ForEachResult::kContinue;
+            });
         }
     }
 

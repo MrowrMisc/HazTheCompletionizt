@@ -3,7 +3,7 @@ add_rules("mode.debug", "mode.release", "mode.releasedbg")
 set_languages("c++23")
 
 option("commonlib")
-    set_default("skyrim-commonlib-ae")
+    set_default("skyrim-commonlib-ng")
 option_end()
 
 if not has_config("commonlib") then
