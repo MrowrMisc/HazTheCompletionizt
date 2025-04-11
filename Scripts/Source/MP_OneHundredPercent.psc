@@ -1,3 +1,0 @@
-scriptName MP_OneHundredPercent hidden
-
-function UpdateJournalWithLatestDiscoverableMapMarkers() global native
